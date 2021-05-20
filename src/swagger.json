@@ -1,0 +1,23 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Boekhoud Source Link API",
+    "version": "0.0.1",
+    "title": "BSLink API",
+    "license": {
+      "name": "Mozilla Public License Version 2.0"
+    }
+  },
+  "host": "bslink.herokuapp.com",
+  "basePath": "/",
+  "tags": [
+
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+  },
+  "definitions": {
+  }
+}
