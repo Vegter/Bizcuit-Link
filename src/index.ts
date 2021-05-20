@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 
 import { serve, setup } from 'swagger-ui-express'
 import * as swaggerDocument from './swagger.json'
@@ -12,6 +13,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const app = express();
+app.use(cors())
 
 app.use('/api-docs', serve, setup(swaggerDocument))
 app.get('/bizcuit_auth', bizcuitAuthHandler)
@@ -19,5 +21,5 @@ app.get('/bizcuit_auth_response', bizcuitAuthResponseHandler)
 app.get('/bizcuit_transactions', bizcuitTransactionsHandler)
 
 app.listen(PORT, () => {
-    return console.log(`Server is listening on ${PORT}`);
+    return console.log(`CORS-enabled server is listening on ${PORT}`);
 });
