@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Express
 export const PORT = process.env.PORT || "8080"
-export const DOMAIN = process.env.domain || `http://localhost:${PORT}`
+export const DOMAIN = process.env.DOMAIN || `http://localhost:${PORT}`
 
 // Sendgrid
 export const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || ""
