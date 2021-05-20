@@ -46,7 +46,7 @@ export const bizcuitAuthResponseHandler  = (request: Request, response: Response
         <h1>Uw verzoek kon helaas niet worden verwerkt</h1>
         <p>Verdere verwerking is afgebroken</p>
     `
-    return response.send(errorHtml)
+    return response.status(400).send(errorHtml)
 };
 
 /**
