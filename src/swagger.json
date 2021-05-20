@@ -1,23 +1,161 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Boekhoud Source Link API",
+    "description": "Boekhoud Source - Bizcuit Link API",
     "version": "0.0.1",
-    "title": "BSLink API",
+    "title": "Biscuit Link API",
     "license": {
       "name": "Mozilla Public License Version 2.0"
     }
   },
-  "host": "bslink.herokuapp.com",
+  "host": "bclink.herokuapp.com",
   "basePath": "/",
   "tags": [
-
+    {
+      "name": "Authorization",
+      "description": "Bizcuit OpenID authorization"
+    },
+    {
+      "name": "Bank transactions",
+      "description": "Retrieval of authorized bank transactions"
+    }
   ],
   "schemes": [
     "https"
   ],
   "paths": {
+    "/bizcuit_auth": {
+      "get": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Bizcuit OpenID url",
+        "description": "Get the OpenID Bizcuit url to approve the request",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "approval succesful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "example": "https://app.bizcuit.nl/auth?response_type=code&client_id=123456&redirect_uri=https://bclink.herokuapp.com/bizcuit_auth_response&scope=openid email account_information&state=123456&prompt=consent"
+                },
+                "requestId": {
+                  "type": "string",
+                  "example": "123456"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bizcuit_auth_response": {
+      "get": {
+        "tags": [
+          "Authorization"
+        ],
+        "summary": "Bizcuit authorization response url",
+        "description": "Endpoint to accept a Bizcuit authorization response",
+        "produces": [
+          "text/html"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "code",
+            "required": true,
+            "type": "string",
+            "description": "Bizcuit authorisation code"
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "required": true,
+            "type": "string",
+            "description": "Request id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "authorization details accepted",
+            "schema": {
+              "type": "string",
+              "example": "<h1>Uw verzoek is succesvol verwerkt</h1> <p>U ontvangt per mail een code om het verzoek te bevestigen</p> <p>U kunt dit venster nu sluiten en het verzoek verder afhandelen in Boekhoud Source</p>"
+            }
+          },
+          "400": {
+            "description": "authorization details incomplete or rejected",
+            "schema": {
+              "type": "string",
+              "example": "<h1>Uw verzoek kon helaas niet worden verwerkt</h1> <p>Verdere verwerking is afgebroken</p>"
+            }
+          }
+        }
+      }
+    },
+    "/bizcuit_transactions": {
+      "get": {
+        "tags": [
+          "Bank transactions"
+        ],
+        "summary": "Bizcuit bank transactions request",
+        "description": "Retrieve the requested and authorized bank transactions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "requestId",
+            "required": true,
+            "type": "string",
+            "description": "Request id that has been received by /auth call"
+          },
+          {
+            "in": "query",
+            "name": "pincode",
+            "required": true,
+            "type": "string",
+            "description": "Pincode received by mail"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list of bank transactions",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "camt": {
+                    "type": "string",
+                    "example": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Document ...\""
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Retrieval of banktransactions has failed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Request not found or invalid pincode"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   },
-  "definitions": {
-  }
+  "definitions": {}
 }
